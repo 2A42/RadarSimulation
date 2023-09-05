@@ -5,6 +5,7 @@ public class TunguskaRadar : Radar
 {
     public static Vector3 tempExactPosOfTarget; //
 
+    // Start is called before the first frame update
     void Start()
     {
         timeOfTheLastRadioWave = 0;
@@ -12,6 +13,7 @@ public class TunguskaRadar : Radar
         radioWaves = new Queue<RadioWaveBehaviour>();
     }
 
+    // Update is called once per frame
     void Update()
     {
         if (Time.time - timeOfTheLastRadioWave > intervalBetweenRadioWaves) createRadioWave();
