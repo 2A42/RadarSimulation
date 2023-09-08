@@ -33,8 +33,6 @@ public class RadioWaveBehaviour : aRadioWave
             az = Vector3.SignedAngle(point, Vector3.right, Vector3.up);
 
             ReflectedRadioWaveBehaviour reflectedRadioWave = gameObject.AddComponent<ReflectedRadioWaveBehaviour>();
-            Debug.Log(sphereCast);
-            Debug.Log(hit.point);
             reflectedRadioWave.Origin = hit.point;
             reflectedRadioWave.Direction = -transform.up;
             reflectedRadioWave.dR = dR;
