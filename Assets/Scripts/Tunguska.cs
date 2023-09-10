@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Tunguska : LandBehaviour
 {
-    [SerializeField] private MeshRenderer AAGunsBulletMesh;
+    [SerializeField] private GameObject Projectile;
+    [SerializeField] private Transform gunsBarrelLeft;
+    [SerializeField] private Transform gunsBarrelRight;
 
     private Vector3 TargetPos;
     private float timeOfTheLastShot;
@@ -21,7 +23,7 @@ public class Tunguska : LandBehaviour
     {
         rotationSpeed = 2.5f;
         timeOfTheLastShot = 0;
-        intervalBetweenShots = 2f;
+        intervalBetweenShots = 0.025f;
         startPos = transform.position;
         turretModel = GameObject.Find("tunguskaTurret");
         gunsModel = GameObject.Find("tunguskaGuns");
@@ -34,6 +36,7 @@ public class Tunguska : LandBehaviour
     void Update()
     {
         Deploy();
+        Shoot();
         Debug.DrawLine(transform.position, TargetPos);
     }
 
@@ -42,7 +45,7 @@ public class Tunguska : LandBehaviour
         if (radar.getAzimuth() != 0 && radar.getPlaceAngle() != 0)
         {
             float phiAngle = radar.getAzimuth() * 180 / Mathf.PI - 90; 
-            float psiAngle = radar.getPlaceAngle() * 180 / Mathf.PI - 30;
+            float psiAngle = radar.getPlaceAngle() * 180 / Mathf.PI - 25;
             
             //Smooth rotation
             turretModel.transform.rotation = Quaternion.Slerp(turretModel.transform.rotation, Quaternion.Euler(turretModel.transform.rotation.eulerAngles.x, 0, -phiAngle), rotationSpeed * Time.deltaTime);
@@ -52,16 +55,17 @@ public class Tunguska : LandBehaviour
         {
             TargetPos = radar.getTargetPosition();
             TunguskaRadar.isHit = false;
-
-            //FUCKING FIX IT
-            if (Time.time - timeOfTheLastShot > intervalBetweenShots)
-            {
-                TunguskaAAGuns guns = gameObject.AddComponent<TunguskaAAGuns>();
-                guns.Mesh = AAGunsBulletMesh;
-                guns.Origin = transform.position;
-                guns.Angle = gunsModel.transform.rotation;
-            }
         }
         radarModel.transform.Rotate(0, 300f * Time.deltaTime, 0);
+    }
+
+    private void Shoot()
+    {
+        if (Time.time - timeOfTheLastShot > intervalBetweenShots)
+        {
+            timeOfTheLastShot = Time.time;
+            Instantiate(Projectile, gunsBarrelLeft.position, gunsBarrelLeft.rotation);
+            Instantiate(Projectile, gunsBarrelRight.position, gunsBarrelRight.rotation);
+        }
     }
 }
